@@ -1,14 +1,21 @@
 final class Point
 {
-    public final int x;
-    public final int y;
+    public int x;
+    public int y;
 
     public Point(int x, int y)
     {
         this.x = x;
         this.y = y;
     }
-
+    public void addX(int i)
+    {
+        x = x + i;
+    }
+    public void addY(int i)
+    {
+        y = y + i;
+    }
     public String toString()
     {
         return "(" + x + "," + y + ")";

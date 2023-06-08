@@ -68,7 +68,9 @@ public final class VirtualWorld extends PApplet {
     // Be sure to refactor this method as appropriate
     public void mousePressed() {
         Point pressed = mouseToPoint();
-        Mummy mummy = Functions.createMummy("mummy", pressed, 0.55, 0.25, imageStore.getImageList("mummy"));
+        Point pyramidpos = mouseToPoint();
+        pyramidpos.addY(1);
+        Mummy mummy = Functions.createMummy("mummy", pyramidpos, 0.55, 0.25, imageStore.getImageList("mummy"));
         world.addEntity(mummy);
         mummy.scheduleActions(scheduler, world, imageStore);
         Pyramid pyramid = Functions.createPyramid("Pyramid", pressed, imageStore.getImageList("pyramid"));
