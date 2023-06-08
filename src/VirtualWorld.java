@@ -71,6 +71,8 @@ public final class VirtualWorld extends PApplet {
         Mummy mummy = Functions.createMummy("mummy", pressed, 0.55, 0.25, imageStore.getImageList("mummy"));
         world.addEntity(mummy);
         mummy.scheduleActions(scheduler, world, imageStore);
+        Pyramid pyramid = Functions.createPyramid("Pyramid", pressed, imageStore.getImageList("pyramid"));
+        world.addEntity(pyramid);
     }
 
     public void scheduleActions(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {

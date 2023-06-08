@@ -50,6 +50,8 @@ public final class Functions {
 
     private static final String HOUSE_KEY = "house";
     private static final int HOUSE_NUM_PROPERTIES = 0;
+    private static final String PYRAMID_KEY = "pyramid";
+    private static final int PYRAMID_NUM_PROPERTIES = 0;
     private static final String MUMMY_KEY = "mummy";
     private static final int MUMMY_ANIMATION_PERIOD = 0;
     private static final int MUMMY_ACTION_PERIOD = 1;
@@ -143,6 +145,14 @@ public final class Functions {
             throw new IllegalArgumentException(String.format("%s requires %d properties when parsing", HOUSE_KEY, HOUSE_NUM_PROPERTIES));
         }
     }
+    public static void parsePyramid(WorldModel world, String[] properties, Point pt, String id, ImageStore imageStore) {
+        if (properties.length == PYRAMID_NUM_PROPERTIES) {
+            Pyramid entity = createPyramid(id, pt, imageStore.getImageList(PYRAMID_KEY));
+            world.tryAddEntity(entity);
+        }else{
+            throw new IllegalArgumentException(String.format("%s requires %d properties when parsing", PYRAMID_KEY, PYRAMID_NUM_PROPERTIES));
+        }
+    }
     public static void parseStump(WorldModel world, String[] properties, Point pt, String id, ImageStore imageStore) {
         if (properties.length == STUMP_NUM_PROPERTIES) {
             Stump entity = createStump(id, pt, imageStore.getImageList(STUMP_KEY));
@@ -190,6 +200,9 @@ public final class Functions {
 
     public static House createHouse(String id, Point position,  List<PImage> images) {
         return new House(id, position, images);
+    }
+    public static Pyramid createPyramid(String id, Point position,  List<PImage> images) {
+        return new Pyramid(id, position, images);
     }
 
     public static Obstacle createObstacle(String id, Point position, double animationPeriod, List<PImage> images) {
@@ -245,6 +258,7 @@ public final class Functions {
                 case Functions.TREE_KEY -> Functions.parseTree(world, properties, pt, id, imageStore);
                 case Functions.SAPLING_KEY -> Functions.parseSapling(world, properties, pt, id, imageStore);
                 case Functions.STUMP_KEY -> Functions.parseStump(world, properties, pt, id, imageStore);
+                case Functions.PYRAMID_KEY -> Functions.parsePyramid(world, properties, pt, id, imageStore);
                 default -> throw new IllegalArgumentException("Entity key is unknown");
             }
         }else{
