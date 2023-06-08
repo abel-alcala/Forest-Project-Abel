@@ -12,9 +12,6 @@ public final class WorldModel {
     private int numCols;
     private Background[][] background;
     private Entity[][] occupancy;
-
-
-
     private Set<EntityAb> entities;
 
     public WorldModel() {

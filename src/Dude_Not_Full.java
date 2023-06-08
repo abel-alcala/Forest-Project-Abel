@@ -15,7 +15,6 @@ public final class Dude_Not_Full extends EntityAb implements AnimationEntity, Ac
     private double actionPeriod;
     private double animationPeriod;
 
-
     //private PathingStrategy strategy = new SingleStepPathingStrategy();
     private PathingStrategy strategy = new AStarPathingStrategy();
 

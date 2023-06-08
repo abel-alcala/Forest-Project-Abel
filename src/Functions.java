@@ -50,7 +50,10 @@ public final class Functions {
 
     private static final String HOUSE_KEY = "house";
     private static final int HOUSE_NUM_PROPERTIES = 0;
-
+    private static final String MUMMY_KEY = "mummy";
+    private static final int MUMMY_ANIMATION_PERIOD = 0;
+    private static final int MUMMY_ACTION_PERIOD = 1;
+    private static final int MUMMY_NUM_PROPERTIES = 2;
     private static final String FAIRY_KEY = "fairy";
     private static final int FAIRY_ANIMATION_PERIOD = 0;
     private static final int FAIRY_ACTION_PERIOD = 1;
@@ -97,6 +100,14 @@ public final class Functions {
         }
     }
 
+    public static void parseMummy(WorldModel world, String[] properties, Point pt, String id, ImageStore imageStore) {
+        if (properties.length == MUMMY_NUM_PROPERTIES) {
+            Mummy entity = createMummy(id, pt, Double.parseDouble(properties[MUMMY_ACTION_PERIOD]), Double.parseDouble(properties[MUMMY_ANIMATION_PERIOD]), imageStore.getImageList(MUMMY_KEY));
+            world.tryAddEntity(entity);
+        }else{
+            throw new IllegalArgumentException(String.format("%s requires %d properties when parsing", MUMMY_KEY, MUMMY_NUM_PROPERTIES));
+        }
+    }
     public static void parseFairy(WorldModel world, String[] properties, Point pt, String id, ImageStore imageStore) {
         if (properties.length == FAIRY_NUM_PROPERTIES) {
             Fairy entity = createFairy(id, pt, Double.parseDouble(properties[FAIRY_ACTION_PERIOD]), Double.parseDouble(properties[FAIRY_ANIMATION_PERIOD]), imageStore.getImageList(FAIRY_KEY));
@@ -201,6 +212,9 @@ public final class Functions {
     public static Fairy createFairy(String id, Point position, double actionPeriod, double animationPeriod, List<PImage> images) {
         return new Fairy(id, position, images, actionPeriod, animationPeriod);
     }
+    public static Mummy createMummy(String id, Point position, double actionPeriod, double animationPeriod, List<PImage> images) {
+        return new Mummy(id, position, images, actionPeriod, animationPeriod);
+    }
 
     // need resource count, though it always starts at 0
     public static Dude_Not_Full createDudeNotFull(String id, Point position, double actionPeriod, double animationPeriod, int resourceLimit, List<PImage> images) {
@@ -223,6 +237,7 @@ public final class Functions {
                     new String[0] : properties[Functions.ENTITY_NUM_PROPERTIES].split(" ");
 
             switch (key) {
+                case Functions.MUMMY_KEY -> Functions.parseMummy(world, properties, pt, id, imageStore);
                 case Functions.OBSTACLE_KEY -> Functions.parseObstacle(world, properties, pt, id, imageStore);
                 case Functions.DUDE_KEY -> Functions.parseDude(world, properties, pt, id, imageStore);
                 case Functions.FAIRY_KEY -> Functions.parseFairy(world, properties, pt, id, imageStore);

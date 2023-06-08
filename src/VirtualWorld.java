@@ -68,14 +68,9 @@ public final class VirtualWorld extends PApplet {
     // Be sure to refactor this method as appropriate
     public void mousePressed() {
         Point pressed = mouseToPoint();
-        System.out.println("CLICK! " + pressed.x + ", " + pressed.y);
-
-        Optional<Entity> entityOptional = world.getOccupant(pressed);
-        if (entityOptional.isPresent()) {
-            Entity entity = entityOptional.get();
-            System.out.println(entity.getId() + ": " + entity.getClass() + " : " + entity.getHealth());
-        }
-
+        Mummy mummy = Functions.createMummy("mummy", pressed, 0.55, 0.25, imageStore.getImageList("mummy"));
+        world.addEntity(mummy);
+        mummy.scheduleActions(scheduler, world, imageStore);
     }
 
     public void scheduleActions(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
