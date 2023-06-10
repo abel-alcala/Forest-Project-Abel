@@ -66,20 +66,34 @@ public final class VirtualWorld extends PApplet {
     // Just for debugging and for P5
     // Be sure to refactor this method as appropriate
     public void mousePressed() {
-        Point pressed = mouseToPoint();
-        Point pyramidpos = mouseToPoint();
-        Point vulturepos = mouseToPoint();
-        vulturepos.addX(1);
-        pyramidpos.addY(1);
-        Mummy mummy = Functions.createMummy("mummy", pyramidpos, 0.75, 0.25, imageStore.getImageList("mummy"));
+        spawnCurse(mouseToPoint());
+    }
+    private void spawnCurse(Point loc)
+    {
+        Point loc2 = new Point(loc.x, loc.y);
+        spawnMummy(loc2);
+        spawnPyramid(loc);
+        transformFairy(loc);
+    }
+    private void spawnMummy(Point loc)
+    {
+        loc.addY(1);
+        Mummy mummy = Functions.createMummy("mummy", loc, 1, 0.25, imageStore.getImageList("mummy"));
         world.addEntity(mummy);
         mummy.scheduleActions(scheduler, world, imageStore);
-        Vulture_Not_Full vulture = Functions.createVultureNotFull("vulture", vulturepos, 0.787, .180, 2, imageStore.getImageList("vulture") );
+    }
+    private void spawnPyramid(Point loc)
+    {
+        Pyramid pyramid = Functions.createPyramid("Pyramid", loc, imageStore.getImageList("pyramid"));
+        world.addEntity(pyramid);
+    }
+    private void transformFairy(Point loc){
+        Optional<EntityAb> target = world.findNearest(loc, new ArrayList<>(Arrays.asList(Fairy.class)));
+        Vulture_Not_Full vulture = Functions.createVultureNotFull("vulture", target.get().getPosition(), 0.787, .180, 2, imageStore.getImageList("vulture"));
+        scheduler.unscheduleAllEvents(target.get());
+        world.removeEntity(scheduler, target.get());
         world.addEntity(vulture);
         vulture.scheduleActions(scheduler, world, imageStore);
-        Pyramid pyramid = Functions.createPyramid("Pyramid", pressed, imageStore.getImageList("pyramid"));
-        world.addEntity(pyramid);
-        world.setBackgroundCell(pyramidpos, new Background("sand", imageStore.getImageList("sand")));
     }
 
     public void scheduleActions(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
@@ -87,6 +101,7 @@ public final class VirtualWorld extends PApplet {
             entity.scheduleActions(scheduler, world, imageStore);
         }
     }
+
 
     private Point mouseToPoint() {
         return view.getViewport().viewportToWorld(mouseX / TILE_WIDTH, mouseY / TILE_HEIGHT);

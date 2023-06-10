@@ -43,7 +43,7 @@ public final class Mummy extends EntityAb implements AnimationEntity, ActivityEn
             Point tgtPos = mummyTarget.get().getPosition();
 
             if (this.moveToMummy(world, mummyTarget.get(), scheduler)) {
-                Mummy mummy = Functions.createMummy(MUMMY_KEY + "_" + mummyTarget.get().getId(), tgtPos, 0.75, 0.25, imageStore.getImageList(MUMMY_KEY));
+                Mummy mummy = Functions.createMummy(MUMMY_KEY + "_" + mummyTarget.get().getId(), tgtPos, 1, 0.25, imageStore.getImageList(MUMMY_KEY));
                 world.removeEntity(scheduler, mummyTarget.get());
                 world.addEntity(mummy);
                 mummy.scheduleActions(scheduler, world, imageStore);

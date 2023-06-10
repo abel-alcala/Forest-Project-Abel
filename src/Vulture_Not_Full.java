@@ -41,7 +41,7 @@ public final class Vulture_Not_Full extends EntityAb implements AnimationEntity,
             target.setHealth(target.getHealth() - 1);
             return true;
         } else {
-            Point nextPos = nextPositionDude(world, target.getPosition());
+            Point nextPos = nextPositionVulture(world, target.getPosition());
 
             if (!this.getPosition().equals(nextPos)) {
                 world.moveEntity(scheduler, this, nextPos);
@@ -58,7 +58,7 @@ public final class Vulture_Not_Full extends EntityAb implements AnimationEntity,
         }
     }
 
-    private Point nextPositionDude(WorldModel world, Point destPos) {
+    private Point nextPositionVulture(WorldModel world, Point destPos) {
         Predicate<Point> canPassThrough = point ->
                 world.withinBounds(point) &&
                         (!world.isOccupied(point) || world.getOccupancyCell(point) instanceof Stump || world.getOccupancyCell(point) instanceof Sapling);
