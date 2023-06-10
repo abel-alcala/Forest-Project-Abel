@@ -6,7 +6,6 @@ import processing.core.*;
 
 public final class VirtualWorld extends PApplet {
     private static String[] ARGS;
-
     private static final int VIEW_WIDTH = 640;
     private static final int VIEW_HEIGHT = 480;
     private static final int TILE_WIDTH = 32;
@@ -69,10 +68,15 @@ public final class VirtualWorld extends PApplet {
     public void mousePressed() {
         Point pressed = mouseToPoint();
         Point pyramidpos = mouseToPoint();
+        Point vulturepos = mouseToPoint();
+        vulturepos.addX(1);
         pyramidpos.addY(1);
-        Mummy mummy = Functions.createMummy("mummy", pyramidpos, 0.55, 0.25, imageStore.getImageList("mummy"));
+        Mummy mummy = Functions.createMummy("mummy", pyramidpos, 0.75, 0.25, imageStore.getImageList("mummy"));
         world.addEntity(mummy);
         mummy.scheduleActions(scheduler, world, imageStore);
+        Vulture_Not_Full vulture = Functions.createVultureNotFull("vulture", vulturepos, 0.787, .180, 2, imageStore.getImageList("vulture") );
+        world.addEntity(vulture);
+        vulture.scheduleActions(scheduler, world, imageStore);
         Pyramid pyramid = Functions.createPyramid("Pyramid", pressed, imageStore.getImageList("pyramid"));
         world.addEntity(pyramid);
         world.setBackgroundCell(pyramidpos, new Background("sand", imageStore.getImageList("sand")));

@@ -35,6 +35,9 @@ public final class Functions {
     private static final String STUMP_KEY = "stump";
     private static final int STUMP_NUM_PROPERTIES = 0;
 
+    private static final String BROKEN_KEY = "broken";
+    private static final int BROKEN_NUM_PROPERTIES = 0;
+
     private static final int SAPLING_HEALTH = 0;
     private static final int SAPLING_NUM_PROPERTIES = 1;
 
@@ -47,9 +50,17 @@ public final class Functions {
     private static final int DUDE_ANIMATION_PERIOD = 1;
     private static final int DUDE_LIMIT = 2;
     private static final int DUDE_NUM_PROPERTIES = 3;
+    private static final String VULTURE_KEY = "vulture";
+    private static final int VULTURE_ACTION_PERIOD = 0;
+    private static final int VULTURE_ANIMATION_PERIOD = 1;
+    private static final int VULTURE_LIMIT = 2;
+    private static final int VULTURE_NUM_PROPERTIES = 3;
+
 
     private static final String HOUSE_KEY = "house";
-    private static final int HOUSE_NUM_PROPERTIES = 0;
+    public static final int HOUSE_ACTION_PERIOD = 0;
+    public static final int HOUSE_HEALTH = 1;
+    public static final int HOUSE_NUM_PROPERTIES = 2;
     private static final String PYRAMID_KEY = "pyramid";
     private static final int PYRAMID_NUM_PROPERTIES = 0;
     private static final String MUMMY_KEY = "mummy";
@@ -101,6 +112,14 @@ public final class Functions {
             throw new IllegalArgumentException(String.format("%s requires %d properties when parsing", DUDE_KEY, DUDE_NUM_PROPERTIES));
         }
     }
+    public static void parseVulture(WorldModel world, String[] properties, Point pt, String id, ImageStore imageStore) {
+        if (properties.length == VULTURE_NUM_PROPERTIES) {
+            Vulture_Not_Full entity = createVultureNotFull(id, pt, Double.parseDouble(properties[VULTURE_ACTION_PERIOD]), Double.parseDouble(properties[VULTURE_ANIMATION_PERIOD]), Integer.parseInt(properties[VULTURE_LIMIT]), imageStore.getImageList(VULTURE_KEY));
+            world.tryAddEntity(entity);
+        }else{
+            throw new IllegalArgumentException(String.format("%s requires %d properties when parsing", VULTURE_KEY, VULTURE_NUM_PROPERTIES));
+        }
+    }
 
     public static void parseMummy(WorldModel world, String[] properties, Point pt, String id, ImageStore imageStore) {
         if (properties.length == MUMMY_NUM_PROPERTIES) {
@@ -139,7 +158,7 @@ public final class Functions {
 
     public static void parseHouse(WorldModel world, String[] properties, Point pt, String id, ImageStore imageStore) {
         if (properties.length == HOUSE_NUM_PROPERTIES) {
-            House entity = createHouse(id, pt, imageStore.getImageList(HOUSE_KEY));
+            House entity = createHouse(id, pt, imageStore.getImageList(HOUSE_KEY), Double.parseDouble(properties[HOUSE_ACTION_PERIOD]), Integer.parseInt(properties[HOUSE_HEALTH]));
             world.tryAddEntity(entity);
         }else{
             throw new IllegalArgumentException(String.format("%s requires %d properties when parsing", HOUSE_KEY, HOUSE_NUM_PROPERTIES));
@@ -159,6 +178,14 @@ public final class Functions {
             world.tryAddEntity(entity);
         }else{
             throw new IllegalArgumentException(String.format("%s requires %d properties when parsing", STUMP_KEY, STUMP_NUM_PROPERTIES));
+        }
+    }
+    public static void parseBroken(WorldModel world, String[] properties, Point pt, String id, ImageStore imageStore) {
+        if (properties.length == BROKEN_NUM_PROPERTIES) {
+            Stump entity = createStump(id, pt, imageStore.getImageList(BROKEN_KEY));
+            world.tryAddEntity(entity);
+        }else{
+            throw new IllegalArgumentException(String.format("%s requires %d properties when parsing", BROKEN_KEY, BROKEN_NUM_PROPERTIES));
         }
     }
 
@@ -198,8 +225,8 @@ public final class Functions {
         return new Activity(entity, world, imageStore);
     }
 
-    public static House createHouse(String id, Point position,  List<PImage> images) {
-        return new House(id, position, images);
+    public static House createHouse(String id, Point position,  List<PImage> images, double actionPeriod, int health) {
+        return new House(id, position, images, actionPeriod, health);
     }
     public static Pyramid createPyramid(String id, Point position,  List<PImage> images) {
         return new Pyramid(id, position, images);
@@ -215,6 +242,9 @@ public final class Functions {
 
     public static Stump createStump(String id, Point position, List<PImage> images) {
         return new Stump(id, position, images);
+    }
+    public static Broken_House createBroken(String id, Point position, List<PImage> images) {
+        return new Broken_House(id, position, images);
     }
 
     // health starts at 0 and builds up until ready to convert to Tree
@@ -233,10 +263,16 @@ public final class Functions {
     public static Dude_Not_Full createDudeNotFull(String id, Point position, double actionPeriod, double animationPeriod, int resourceLimit, List<PImage> images) {
         return new Dude_Not_Full(id, position, images, resourceLimit, 0, actionPeriod, animationPeriod);
     }
+    public static Vulture_Not_Full createVultureNotFull(String id, Point position, double actionPeriod, double animationPeriod, int resourceLimit, List<PImage> images) {
+        return new Vulture_Not_Full(id, position, images, resourceLimit, 0, actionPeriod, animationPeriod);
+    }
 
     // don't technically need resource count ... full
     public static Dude_Full createDudeFull(String id, Point position, double actionPeriod, double animationPeriod, int resourceLimit, List<PImage> images) {
         return new Dude_Full(id, position, images, resourceLimit, actionPeriod, animationPeriod, 0);
+    }
+    public static Vulture_Full createVultureFull(String id, Point position, double actionPeriod, double animationPeriod, int resourceLimit, List<PImage> images) {
+        return new Vulture_Full(id, position, images, resourceLimit, actionPeriod, animationPeriod, 0);
     }
 
     public static void parseEntity(WorldModel world, String line, ImageStore imageStore) {
@@ -253,11 +289,13 @@ public final class Functions {
                 case Functions.MUMMY_KEY -> Functions.parseMummy(world, properties, pt, id, imageStore);
                 case Functions.OBSTACLE_KEY -> Functions.parseObstacle(world, properties, pt, id, imageStore);
                 case Functions.DUDE_KEY -> Functions.parseDude(world, properties, pt, id, imageStore);
+                case Functions.VULTURE_KEY -> Functions.parseVulture(world, properties, pt, id, imageStore);
                 case Functions.FAIRY_KEY -> Functions.parseFairy(world, properties, pt, id, imageStore);
                 case Functions.HOUSE_KEY -> Functions.parseHouse(world, properties, pt, id, imageStore);
                 case Functions.TREE_KEY -> Functions.parseTree(world, properties, pt, id, imageStore);
                 case Functions.SAPLING_KEY -> Functions.parseSapling(world, properties, pt, id, imageStore);
                 case Functions.STUMP_KEY -> Functions.parseStump(world, properties, pt, id, imageStore);
+                case Functions.BROKEN_KEY -> Functions.parseBroken(world, properties, pt, id, imageStore);
                 case Functions.PYRAMID_KEY -> Functions.parsePyramid(world, properties, pt, id, imageStore);
                 default -> throw new IllegalArgumentException("Entity key is unknown");
             }
