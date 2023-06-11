@@ -74,6 +74,7 @@ public final class VirtualWorld extends PApplet {
         spawnMummy(loc2);
         spawnPyramid(loc);
         transformFairy(loc);
+        changeBackground(loc2);
     }
     private void spawnMummy(Point loc)
     {
@@ -87,7 +88,20 @@ public final class VirtualWorld extends PApplet {
         Pyramid pyramid = Functions.createPyramid("Pyramid", loc, imageStore.getImageList("pyramid"));
         world.addEntity(pyramid);
     }
-    private void transformFairy(Point loc){
+
+    private void changeBackground(Point location) {
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                int newX = location.x + i;
+                int newY = location.y + j;
+
+                if (world.withinBounds(new Point(newX, newY))) {
+                    world.setBackgroundCell(new Point(newX, newY), new Background("sand", imageStore.getImageList("sand")));
+                }
+            }
+        }
+    }
+        private void transformFairy(Point loc){
         Optional<EntityAb> target = world.findNearest(loc, new ArrayList<>(Arrays.asList(Fairy.class)));
         Vulture_Not_Full vulture = Functions.createVultureNotFull("vulture", target.get().getPosition(), 0.787, .180, 2, imageStore.getImageList("vulture"));
         scheduler.unscheduleAllEvents(target.get());
