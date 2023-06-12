@@ -55,7 +55,7 @@ public final class Fairy extends EntityAb implements AnimationEntity, ActivityEn
     private Point nextPositionFairy(WorldModel world, Point destPos) {
         Predicate<Point> canPassThrough = point ->
                 world.withinBounds(point) &&
-                        (!world.isOccupied(point) || world.getOccupancyCell(point) instanceof House);
+                        (!world.isOccupied(point));
 
 
         BiPredicate<Point, Point> withinReach = Point::adjacent;
