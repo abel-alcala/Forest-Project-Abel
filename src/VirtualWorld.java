@@ -71,10 +71,10 @@ public final class VirtualWorld extends PApplet {
     private void spawnCurse(Point loc)
     {
         Point loc2 = new Point(loc.x, loc.y);
+        changeBackground(loc2);
         spawnMummy(loc2);
         spawnPyramid(loc);
         transformFairy(loc);
-        changeBackground(loc2);
     }
     private void spawnMummy(Point loc)
     {
@@ -94,20 +94,28 @@ public final class VirtualWorld extends PApplet {
             for (int j = -1; j <= 1; j++) {
                 int newX = location.x + i;
                 int newY = location.y + j;
-
-                if (world.withinBounds(new Point(newX, newY))) {
-                    world.setBackgroundCell(new Point(newX, newY), new Background("sand", imageStore.getImageList("sand")));
+                Point p = new Point(newX, newY);
+                if (world.withinBounds(p)) {
+                    if(world.getOccupancyCell(p) instanceof Obstacle )
+                    {
+                        world.removeEntityAt(p);
+                    }
+                    world.setBackgroundCell(p, new Background("sand", imageStore.getImageList("sand")));
                 }
             }
         }
     }
         private void transformFairy(Point loc){
         Optional<EntityAb> target = world.findNearest(loc, new ArrayList<>(Arrays.asList(Fairy.class)));
-        Vulture_Not_Full vulture = Functions.createVultureNotFull("vulture", target.get().getPosition(), 0.787, .180, 2, imageStore.getImageList("vulture"));
-        scheduler.unscheduleAllEvents(target.get());
-        world.removeEntity(scheduler, target.get());
-        world.addEntity(vulture);
-        vulture.scheduleActions(scheduler, world, imageStore);
+        if(target.isPresent())
+        {
+            Vulture_Not_Full vulture = Functions.createVultureNotFull("vulture", target.get().getPosition(), 0.787, .180, 2, imageStore.getImageList("vulture"));
+            scheduler.unscheduleAllEvents(target.get());
+            world.removeEntity(scheduler, target.get());
+            world.addEntity(vulture);
+            vulture.scheduleActions(scheduler, world, imageStore);
+        }
+
     }
 
     public void scheduleActions(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
